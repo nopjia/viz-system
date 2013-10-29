@@ -13,6 +13,8 @@ define([
     Utils
   ) {
 
+  var dateObj = new Date();
+  var lastTime = 0;
   var timer = 0.0;
   var resolution = 2.0;
 
@@ -21,6 +23,8 @@ define([
     camNear: 0.1,
     camFar: 1000.0,
     resolution: resolution,
+
+    timer: timer,
 
     init: function() {
       this.container = $("#webgl-container")[0];
@@ -79,6 +83,11 @@ define([
     },
 
     update: function() {
+      var currTime = dateObj.getTime();
+      var timeElapsed = currTime - lastTime;
+      timer += timeElapsed / 1000.0;
+      this.timer = timer;
+
       this.stats.update();
 
       this.renderer.clear();
@@ -91,7 +100,7 @@ define([
         this.renderer.render(this.scene, this.camera);
       }
 
-      this.postprocess.uniforms.uTime.value += 0.001;
+      this.postprocess.uniforms.uTime.value = timer;
 
       this.controls.update();
     },
