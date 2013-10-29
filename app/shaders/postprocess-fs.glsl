@@ -52,13 +52,11 @@ vec3 myBloomEffect() {
 }
 
 void main() {
-  vec4 col = vec4(1.0, 0.0, 0.0, 1.0);
-  col = vec4(myBloomEffect(), 1.0);
+  vec4 col = vec4(myBloomEffect(), 1.0);
   col.rgb = filmPass(col.rgb);
   
   //col = vec4(doThreshold(texture2D(uDiffuse,vUv).rgb), 1.0);
   //col = texture2D(uDiffuse,vUv);
-
   //col = vec4(vUv.x, vUv.y, 0.0, 1.0);
   
   gl_FragColor = col;

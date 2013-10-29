@@ -15,21 +15,24 @@ define([
 
   var dateObj = new Date();
   var lastTime = 0;
-  var timer = 0.0;
-  var resolution = 2.0;
+  var timer = 0;  // in 1.000 seconds
+
+  var RESOLUTION = 2;
 
   var Graphics = {
-    camFOV: 45,
-    camNear: 0.1,
-    camFar: 1000.0,
-    resolution: resolution,
+    CAM_FOV: 45,
+    CAM_NEAR: 0.1,
+    CAM_FAR: 1000,
+    FOG_NEAR: 10,
+    FOG_FAR: 100,
+    RESOLUTION: RESOLUTION,
 
     timer: timer,
 
     init: function() {
       this.container = $("#webgl-container")[0];
-      this.width = window.innerWidth/this.resolution;
-      this.height = window.innerHeight/this.resolution;
+      this.width = window.innerWidth/this.RESOLUTION;
+      this.height = window.innerHeight/this.RESOLUTION;
 
       this.renderer = new THREE.WebGLRenderer({
         clearAlpha: 0,
@@ -42,11 +45,11 @@ define([
  
       // camera
       this.camera = new THREE.PerspectiveCamera(
-        this.camFOV,
+        this.CAM_FOV,
         this.width/this.height,
-        this.camNear, this.camFar
+        this.CAM_NEAR, this.CAM_FAR
       );
-      this.camera.position.set(5,5,10);
+      this.camera.position.set(2,2,3);
       this.camera.lookAt(new THREE.Vector3());
 
       this.controls = new THREE.TrackballControls(this.camera, this.container);
@@ -61,11 +64,8 @@ define([
 
       // scene
       this.scene = new THREE.Scene();
-
-      geometry = new THREE.CubeGeometry( 1, 1, 1 );
-      material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-      mesh = new THREE.Mesh( geometry, material );
-      this.scene.add( mesh );
+      this.scene.fog = new THREE.Fog( 0x000000, this.FOG_NEAR, this.FOG_FAR );
+      setupScene();
 
       if (this.postprocess.enabled)
         this.postprocess.init();
@@ -106,8 +106,8 @@ define([
     },
 
     onWindowResize: function() {
-      this.width  = window.innerWidth/this.resolution;
-      this.height = window.innerHeight/this.resolution;
+      this.width  = window.innerWidth/this.RESOLUTION;
+      this.height = window.innerHeight/this.RESOLUTION;
 
       this.renderer.setSize( this.width, this.height );
 
@@ -122,11 +122,12 @@ define([
       enabled: true,
 
       init: function() {
-        width = window.innerWidth/resolution;
-        height = window.innerHeight/resolution;
+        width = window.innerWidth/RESOLUTION;
+        height = window.innerHeight/RESOLUTION;
 
         // init buffer
         this.rtDiffuse = new THREE.WebGLRenderTarget(width, height);
+        this.rtDiffuse.generateMipmaps = false;
         
         // scene and camera
         this.camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, -1.0, 1.0);
@@ -149,6 +150,13 @@ define([
       }
     }
   };
+
+  function setupScene() {
+    geometry = new THREE.CubeGeometry( 1, 1, 1 );
+    material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+    mesh = new THREE.Mesh( geometry, material );
+    Graphics.scene.add( mesh );
+  }
 
   return Graphics;
 });

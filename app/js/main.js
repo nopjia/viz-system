@@ -17,8 +17,7 @@ require.config({
     Stats: 'vendor/Stats',
     shortcut: 'vendor/shortcut',
     TrackballControls: 'vendor/TrackballControls'
-  },
-  urlArgs: "bust=" + (new Date()).getTime()
+  }
 });
 
 require(["app"], function(App) {
