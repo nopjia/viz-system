@@ -5,7 +5,8 @@ define([
   "TrackballControls",
   "FlyControls",
   "utils",
-  "mycontrols"
+  "mycontrols",
+  "scene"
   ],
   function(
     ignore,
@@ -14,7 +15,8 @@ define([
     ignore,
     ignore,
     Utils,
-    myControls
+    MyControls,
+    SceneManager
   ) {
 
   var clock = new THREE.Clock();
@@ -26,7 +28,7 @@ define([
     CAM_NEAR: 0.1,
     CAM_FAR: 200,
     FOG_NEAR: 10,
-    FOG_FAR: 100,
+    FOG_FAR: 200,
     RESOLUTION: RESOLUTION,
 
     init: function() {
@@ -49,10 +51,10 @@ define([
         this.width/this.height,
         this.CAM_NEAR, this.CAM_FAR
       );
-      this.camera.position.set(2,2,3);
+      this.camera.position.set(0,0,1);
       this.camera.lookAt(new THREE.Vector3());
 
-      this.controls = myControls;
+      this.controls = MyControls;
       this.controls.camera = this.camera;
       this.controls.init();
 
@@ -69,7 +71,8 @@ define([
       // scene
       this.scene = new THREE.Scene();
       this.scene.fog = new THREE.Fog( 0x000000, this.FOG_NEAR, this.FOG_FAR );
-      setupScene();
+      this.sceneManager = SceneManager;
+      this.sceneManager.init(this.scene);
 
       if (this.postprocess.enabled)
         this.postprocess.init();
@@ -87,10 +90,13 @@ define([
     },
 
     update: function() {
+      var deltaT = clock.getDelta();
+
+      this.sceneManager.updateObjects(deltaT);
+      this.controls.update(deltaT);
+
       this.stats.update();
-
       this.renderer.clear();
-
       if (this.postprocess.enabled) {
         this.renderer.render( this.scene, this.camera, this.postprocess.rtDiffuse, true );
         this.renderer.render( this.postprocess.scene, this.postprocess.camera );
@@ -100,8 +106,6 @@ define([
       }
 
       this.postprocess.uniforms.uTime.value = clock.elapsedTime / 10;
-
-      this.controls.update( clock.getDelta() );
     },
 
     onWindowResize: function() {
@@ -110,9 +114,11 @@ define([
 
       this.renderer.setSize( this.width, this.height );
 
-      if (this.postprocess.enabled)
-        this.postprocess.rtDiffuse = new THREE.WebGLRenderTarget(
-          this.width/this.postprocess.RESOLUTION, this.height/this.postprocess.RESOLUTION);
+      // if (this.postprocess.enabled) {
+      //   this.postprocess.rtDiffuse = new THREE.WebGLRenderTarget(
+      //     this.width/this.postprocess.RESOLUTION, this.height/this.postprocess.RESOLUTION);
+      //   this.postprocess.rtDiffuse.generateMipmaps = false;
+      // }
 
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
@@ -151,13 +157,6 @@ define([
       }
     }
   };
-
-  function setupScene() {
-    geometry = new THREE.CubeGeometry( 1, 1, 1 );
-    material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-    mesh = new THREE.Mesh( geometry, material );
-    Graphics.scene.add( mesh );
-  }
 
   return Graphics;
 });
