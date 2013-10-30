@@ -93,6 +93,7 @@ define([
       var deltaT = clock.getDelta();
 
       this.sceneManager.updateObjects(deltaT);
+      this.sceneManager.wrapAround(this.camera.position);
       this.controls.update(deltaT);
 
       this.stats.update();

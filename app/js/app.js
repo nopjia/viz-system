@@ -27,7 +27,11 @@ define([
     shortcut.add("shift+p", function() {
       g.postprocess.enabled = !g.postprocess.enabled;
     });
+
+    shortcut.add("m", function() {
+      g.sceneManager.toggleObjectMaterial();
+    });
   }
-  
+
   return App;
 });
