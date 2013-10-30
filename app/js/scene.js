@@ -10,6 +10,7 @@ define([
   var OBJ_SCALE_MIN = 1;
   var OBJ_SCALE_MAX = 20;
   var OBJ_VELOCITY_MAX = 2;
+  var OBJ_DROT_MAX = 0.3;
   var OBJ_GEO_MODES = 2;
   var PARTICLE_SIZE = 5;
 
@@ -59,11 +60,17 @@ define([
         mesh.velocity.y = Math.random() * OBJ_VELOCITY_MAX * 2 - OBJ_VELOCITY_MAX;
         mesh.velocity.z = Math.random() * OBJ_VELOCITY_MAX * 2 - OBJ_VELOCITY_MAX;
 
+        mesh.drot = new THREE.Vector3();
+        mesh.drot.x = Math.random() * OBJ_DROT_MAX * 2 - OBJ_DROT_MAX;
+        mesh.drot.y = Math.random() * OBJ_DROT_MAX * 2 - OBJ_DROT_MAX;
+        mesh.drot.z = Math.random() * OBJ_DROT_MAX * 2 - OBJ_DROT_MAX;
+
         var meshMesh = mesh;
         var meshParticle = new THREE.ParticleSystem(geo);
         meshParticle.position = meshMesh.position;
         meshParticle.scale    = meshMesh.scale;
         meshParticle.velocity = meshMesh.velocity;
+        meshParticle.drot     = meshMesh.drot;
         meshParticle.material.size = PARTICLE_SIZE;
 
         this.objects[0].push(meshMesh);
@@ -80,6 +87,10 @@ define([
       for (var i in this.objects[this.geoMode]) {
         var obj = this.objects[this.geoMode][i];
         obj.position = obj.position.add( obj.velocity.clone().multiplyScalar(deltaT) );
+
+        obj.rotation.x += obj.drot.x * deltaT;
+        obj.rotation.y += obj.drot.y * deltaT;
+        obj.rotation.z += obj.drot.z * deltaT;
       }
     },
 
