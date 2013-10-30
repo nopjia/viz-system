@@ -1,12 +1,11 @@
 define([
   "shortcut",
   "graphics",
-  "gamepad",
+  "gamepad"
   ],
   function(
     shortcut,
-    g,
-    gamepad
+    g
   ) {
 
   var App = {
@@ -14,11 +13,9 @@ define([
     init: function() {
       setupShortcuts();
       g.init();
-      gamepad.init();
       
       var update = function() {
         g.update();
-        gamepad.update();
         requestAnimationFrame(update);
       };
       update();
@@ -31,6 +28,6 @@ define([
       g.postprocess.enabled = !g.postprocess.enabled;
     });
   }
-
+  
   return App;
 });

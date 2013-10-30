@@ -3,31 +3,31 @@ define([
   "THREE",
   "Stats",
   "TrackballControls",
-  "utils"
+  "FlyControls",
+  "utils",
+  "mycontrols"
   ],
   function(
     ignore,
     ignore,
     ignore,
     ignore,
-    Utils
+    ignore,
+    Utils,
+    myControls
   ) {
 
-  var dateObj = new Date();
-  var lastTime = 0;
-  var timer = 0;  // in 1.000 seconds
+  var clock = new THREE.Clock();
 
   var RESOLUTION = 2;
 
   var Graphics = {
     CAM_FOV: 45,
     CAM_NEAR: 0.1,
-    CAM_FAR: 1000,
+    CAM_FAR: 200,
     FOG_NEAR: 10,
     FOG_FAR: 100,
     RESOLUTION: RESOLUTION,
-
-    timer: timer,
 
     init: function() {
       this.container = $("#webgl-container")[0];
@@ -52,15 +52,19 @@ define([
       this.camera.position.set(2,2,3);
       this.camera.lookAt(new THREE.Vector3());
 
-      this.controls = new THREE.TrackballControls(this.camera, this.container);
-      this.controls.rotateSpeed = 1.0;
-      this.controls.zoomSpeed = 1.2;
-      this.controls.panSpeed = 1.0;
-      this.controls.dynamicDampingFactor = 0.3;
-      this.controls.staticMoving = false;
-      this.controls.noZoom = false;
-      this.controls.noPan = true;
-      this.controls.keys = []; // hack disable keyboard
+      this.controls = myControls;
+      this.controls.camera = this.camera;
+      this.controls.init();
+
+      // this.controls = new THREE.TrackballControls(this.camera, this.container);
+      // this.controls.rotateSpeed = 1.0;
+      // this.controls.zoomSpeed = 1.2;
+      // this.controls.panSpeed = 1.0;
+      // this.controls.dynamicDampingFactor = 0.3;
+      // this.controls.staticMoving = false;
+      // this.controls.noZoom = false;
+      // this.controls.noPan = true;
+      // this.controls.keys = []; // hack disable keyboard
 
       // scene
       this.scene = new THREE.Scene();
@@ -83,11 +87,6 @@ define([
     },
 
     update: function() {
-      var currTime = dateObj.getTime();
-      var timeElapsed = currTime - lastTime;
-      timer += timeElapsed / 1000.0;
-      this.timer = timer;
-
       this.stats.update();
 
       this.renderer.clear();
@@ -100,9 +99,9 @@ define([
         this.renderer.render(this.scene, this.camera);
       }
 
-      this.postprocess.uniforms.uTime.value = timer;
+      this.postprocess.uniforms.uTime.value = clock.elapsedTime / 10;
 
-      this.controls.update();
+      this.controls.update( clock.getDelta() );
     },
 
     onWindowResize: function() {
@@ -112,7 +111,8 @@ define([
       this.renderer.setSize( this.width, this.height );
 
       if (this.postprocess.enabled)
-        this.postprocess.rtDiffuse = new THREE.WebGLRenderTarget(this.width, this.height);
+        this.postprocess.rtDiffuse = new THREE.WebGLRenderTarget(
+          this.width/this.postprocess.RESOLUTION, this.height/this.postprocess.RESOLUTION);
 
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
@@ -120,13 +120,14 @@ define([
 
     postprocess: {
       enabled: true,
+      RESOLUTION: 2,  // on top, multiplied
 
       init: function() {
         width = window.innerWidth/RESOLUTION;
         height = window.innerHeight/RESOLUTION;
 
         // init buffer
-        this.rtDiffuse = new THREE.WebGLRenderTarget(width, height);
+        this.rtDiffuse = new THREE.WebGLRenderTarget(width/this.RESOLUTION, height/this.RESOLUTION);
         this.rtDiffuse.generateMipmaps = false;
         
         // scene and camera

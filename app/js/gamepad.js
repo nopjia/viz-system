@@ -34,6 +34,32 @@ define([
     TYPICAL_BUTTON_COUNT: 16,
     TYPICAL_AXIS_COUNT: 4,
 
+    buttons: {
+      FACE_1: 0,
+      FACE_2: 0,
+      FACE_3: 0,
+      FACE_4: 0,
+      LEFT_SHOULDER: 0,
+      RIGHT_SHOULDER: 0,
+      LEFT_SHOULDER_BOTTOM: 0,
+      RIGHT_SHOULDER_BOTTOM: 0,
+      SELECT: 0,
+      START: 0,
+      LEFT_ANALOGUE_STICK: 0,
+      RIGHT_ANALOGUE_STICK: 0,
+      PAD_TOP: 0,
+      PAD_BOTTOM: 0,
+      PAD_LEFT: 0,
+      PAD_RIGHT: 0
+    },
+
+    axes: {
+      LEFT_ANALOGUE_HOR: 0,
+      LEFT_ANALOGUE_VERT: 0,
+      RIGHT_ANALOGUE_HOR: 0,
+      RIGHT_ANALOGUE_VERT: 0
+    },
+
     polling: false,
     gamepad: null, // only support one gamepad
 
@@ -59,13 +85,18 @@ define([
             console.log(this.gamepad);
           }
 
-          console.log(
-            _gamepad.axes[this.AXES["LEFT_ANALOGUE_VERT"]] + " , " +
-            _gamepad.axes[this.AXES["LEFT_ANALOGUE_HOR"]]
-          );
+          // record values
+          var k;
+          for (k in this.AXES) {
+            this.axes[k] = _gamepad.axes[this.AXES[k]];
+          }
+          for (k in this.BUTTONS) {
+            this.buttons[k] = _gamepad.buttons[this.BUTTONS[k]];
+          }
         }
       }
     }
+
 
   };
 
