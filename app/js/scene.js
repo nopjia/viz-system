@@ -31,6 +31,14 @@ define([
 
     init: function(scene) {
       this.scene = scene;
+
+      var triGeometry = new THREE.Geometry();
+      triGeometry.vertices.push( new THREE.Vector3( Math.cos(Math.PI*1/6), Math.sin(Math.PI*1/6), 0 ) );
+      triGeometry.vertices.push( new THREE.Vector3( Math.cos(Math.PI*5/6), Math.sin(Math.PI*5/6), 0 ) );
+      triGeometry.vertices.push( new THREE.Vector3( 0, -1, 0 ) );
+      triGeometry.faces.push( new THREE.Face3(0, 1, 2) );
+
+      this.geos.push(triGeometry);
       this.geos.push( new THREE.IcosahedronGeometry(1, 0) );
       this.geos.push( new THREE.OctahedronGeometry(1, 0) );
       this.geos.push( new THREE.TetrahedronGeometry(1, 0) );
