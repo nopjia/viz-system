@@ -56,7 +56,7 @@ define([
 
   // CONTROL VARS
 
-  var TOGGLE_WAIT_FRAMES = 5;
+  var TOGGLE_WAIT_FRAMES = 7;
   var toggleWait = 0;
 
   var SPAZ_MAG = 5;
@@ -73,7 +73,7 @@ define([
 
   var subdivsButtonLast = 0;
 
-  var COLORS_WAIT_FRAMES = 5;
+  var COLORS_WAIT_FRAMES = 8;
   var colorsWait = 0;
   var currColorsIdx = 0;
   var cycleColors = [
@@ -86,6 +86,10 @@ define([
   ];
 
   var gamepadKeysUpdate = function(deltaT) {
+
+    // RESET! refresh page
+    if (gamepad.buttons["SELECT"] && gamepad.buttons["START"])
+      location.reload();
     
     // toggle material
     ++toggleWait;
@@ -142,7 +146,7 @@ define([
         obj.position.z += Math.random() * SPAZ_MAG * 2 - SPAZ_MAG;
       }
     }
-    
+
   };
 
   return App;
