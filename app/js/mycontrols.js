@@ -1,10 +1,7 @@
 define([
-  "FlyControls",
-  "gamepad"
+  "FlyControls"
   ],
   function(
-    ignore,
-    gamepad
   ) {
 
   var ANALOG_TH = 0.05;
@@ -14,36 +11,39 @@ define([
   var BOOST_FACTOR = 5;
 
   var MyControls = {
-    camera: null,
     speed: 0,
 
-    init: function() {
+    gamepad: null,
+    camera: null,
+
+    init: function(camera, gamepad) {
+      this.camera = camera;
+      this.gamepad = gamepad;
+
       this.controls = new THREE.FlyControls(this.camera);
       this.controls.autoForward = true;
       this.controls.dragToLook = false;
-
-      gamepad.init();
     },
 
     update: function(delta) {
-      gamepad.update();
+      this.gamepad.update();
 
-      var boostMult = gamepad.buttons["LEFT_SHOULDER_BOTTOM"] ?
+      var boostMult = this.gamepad.buttons["LEFT_SHOULDER_BOTTOM"] ?
         BOOST_FACTOR : 1;
 
-      var lookV = gamepad.axes["LEFT_ANALOGUE_VERT"];
+      var lookV = this.gamepad.axes["LEFT_ANALOGUE_VERT"];
       this.controls.pitchSpeed = PITCH_SPEED * Math.abs(lookV) * boostMult;
       this.controls.moveState.pitchUp = (lookV < -ANALOG_TH) * 1;
       this.controls.moveState.pitchDown = (lookV > ANALOG_TH) * 1;
 
-      var lookH = gamepad.axes["LEFT_ANALOGUE_HOR"];
+      var lookH = this.gamepad.axes["LEFT_ANALOGUE_HOR"];
       this.controls.rollSpeed = ROLL_SPEED * Math.abs(lookH) * boostMult;
       this.controls.moveState.rollLeft = (lookH < -ANALOG_TH) * 1;
       this.controls.moveState.rollRight = (lookH > ANALOG_TH) * 1;
 
-      if (gamepad.buttons["PAD_TOP"])
+      if (this.gamepad.buttons["PAD_TOP"])
         this.speed += SPEED_STEP * delta;
-      if (gamepad.buttons["PAD_BOTTOM"])
+      if (this.gamepad.buttons["PAD_BOTTOM"])
         this.speed -= SPEED_STEP * delta;
       this.controls.movementSpeed = this.speed * boostMult;
 

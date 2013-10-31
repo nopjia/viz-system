@@ -1,37 +1,58 @@
 define([
   "shortcut",
   "graphics",
-  "gamepad"
+  "gamepad",
+  "mycontrols",
+  "scene"
   ],
   function(
     shortcut,
-    g
+    g,
+    gamepad,
+    controls,
+    sceneManager
   ) {
+
+  var clock = new THREE.Clock();
+
+  var setupShortcuts = function() {
+    shortcut.add("shift+p", function() {
+      g.postprocess.enabled = !g.postprocess.enabled;
+    });
+  }
 
   var App = {
 
     init: function() {
       setupShortcuts();
       g.init();
+
+      gamepad.init();
+      controls.init(g.camera, gamepad);
+      sceneManager.init(g.scene);
       
-      var update = function() {
-        g.update();
-        requestAnimationFrame(update);
-      };
       update();
     }
 
   };
 
-  function setupShortcuts() {
-    shortcut.add("shift+p", function() {
-      g.postprocess.enabled = !g.postprocess.enabled;
-    });
+  var update = function() {
+    var deltaT = clock.getDelta();
 
-    shortcut.add("m", function() {
-      g.sceneManager.toggleObjectMaterial();
-    });
-  }
+    gamepad.update();
+    gamepadKeysUpdate();
+    controls.update(deltaT);
+    sceneManager.updateObjects(deltaT);
+    sceneManager.wrapAround(g.camera.position);
+    g.update();
+
+    requestAnimationFrame(update);
+  };
+
+  var gamepadKeysUpdate = function() {
+    if (gamepad.buttons["FACE_4"])
+      sceneManager.toggleObjectMaterial();
+  };
 
   return App;
 });

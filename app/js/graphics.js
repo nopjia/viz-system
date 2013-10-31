@@ -4,9 +4,7 @@ define([
   "Stats",
   "TrackballControls",
   "FlyControls",
-  "utils",
-  "mycontrols",
-  "scene"
+  "utils"
   ],
   function(
     ignore,
@@ -14,9 +12,7 @@ define([
     ignore,
     ignore,
     ignore,
-    Utils,
-    MyControls,
-    SceneManager
+    Utils
   ) {
 
   var clock = new THREE.Clock();
@@ -54,10 +50,6 @@ define([
       this.camera.position.set(0,0,1);
       this.camera.lookAt(new THREE.Vector3());
 
-      this.controls = MyControls;
-      this.controls.camera = this.camera;
-      this.controls.init();
-
       // this.controls = new THREE.TrackballControls(this.camera, this.container);
       // this.controls.rotateSpeed = 1.0;
       // this.controls.zoomSpeed = 1.2;
@@ -71,8 +63,6 @@ define([
       // scene
       this.scene = new THREE.Scene();
       this.scene.fog = new THREE.Fog( 0x000000, this.FOG_NEAR, this.FOG_FAR );
-      this.sceneManager = SceneManager;
-      this.sceneManager.init(this.scene);
 
       if (this.postprocess.enabled)
         this.postprocess.init();
@@ -89,14 +79,9 @@ define([
       })(this);
     },
 
-    update: function() {
-      var deltaT = clock.getDelta();
-
-      this.sceneManager.updateObjects(deltaT);
-      this.sceneManager.wrapAround(this.camera.position);
-      this.controls.update(deltaT);
-
+    update: function(elapsedTime) {
       this.stats.update();
+
       this.renderer.clear();
       if (this.postprocess.enabled) {
         this.renderer.render( this.scene, this.camera, this.postprocess.rtDiffuse, true );
@@ -106,7 +91,7 @@ define([
         this.renderer.render(this.scene, this.camera);
       }
 
-      this.postprocess.uniforms.uTime.value = clock.elapsedTime / 10;
+      this.postprocess.uniforms.uTime.value = elapsedTime / 10;
     },
 
     onWindowResize: function() {
