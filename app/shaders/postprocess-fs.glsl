@@ -30,6 +30,7 @@ uniform float uUVDistort;
 uniform float uUVLoop;
 uniform float uFlash;
 uniform float uBlackout;
+uniform float uSubdivs;
 
 // http://www.ozone3d.net/blogs/lab/20110427/glsl-random-generator/
 float rand(vec2 n) {
@@ -88,6 +89,9 @@ vec3 myBloomEffect(vec2 newUV) {
 #define DISTORT_TIME_MOVE 100.0
 vec2 transformUV(vec2 uv) {
   vec2 newUV = vUv;
+
+  // UV SUBDIV
+  newUV *= uSubdivs;
 
   // UV DISTORT
   float rand1 = rand(vec2(uTime,vUv.y));

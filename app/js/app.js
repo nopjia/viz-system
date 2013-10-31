@@ -66,6 +66,7 @@ define([
   var uvLoop = 0;
   var BLACK_WAIT_FRAMES = 1;
   var blackWait = 0;
+  var subdivsButtonLast = 0;
 
   var gamepadKeysUpdate = function(deltaT) {
     
@@ -84,6 +85,13 @@ define([
         g.postprocess.uniforms.uBlackout.value === 0 ? 1 : 0;
       blackWait = 0;
     }
+
+    if (gamepad.buttons["PAD_TOP"] && subdivsButtonLast === 0)
+      g.postprocess.uniforms.uSubdivs.value += 1;
+    else if (gamepad.buttons["PAD_BOTTOM"] && subdivsButtonLast === 0)
+      g.postprocess.uniforms.uSubdivs.value -=
+        g.postprocess.uniforms.uSubdivs.value > 1 ? 1 : 0;
+    subdivsButtonLast = gamepad.buttons["PAD_TOP"] || gamepad.buttons["PAD_BOTTOM"];
 
     // flash    
     // NOTE: decay not framerate independent
