@@ -13,6 +13,7 @@ define([
   var OBJ_DROT_MAX = 0.3;
   var OBJ_GEO_MODES = 2;
   var PARTICLE_SIZE = 5;
+  var PARTICLE_LIGHT_ADD = 0.15;
 
   var Scene = {
 
@@ -80,6 +81,9 @@ define([
         meshParticle.velocity = meshMesh.velocity;
         meshParticle.drot     = meshMesh.drot;
         meshParticle.material.size = PARTICLE_SIZE;
+        meshParticle.material.color.r += PARTICLE_LIGHT_ADD;
+        meshParticle.material.color.g += PARTICLE_LIGHT_ADD;
+        meshParticle.material.color.b += PARTICLE_LIGHT_ADD;
 
         this.objects[0].push(meshMesh);
         this.objects[1].push(meshParticle);
