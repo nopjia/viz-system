@@ -1,3 +1,26 @@
+#ifdef GL_ES
+precision highp float;
+#endif
+
+//---------------------------------------------------------
+// MACROS
+//---------------------------------------------------------
+
+#define EPS       0.0001
+#define PI        3.14159265
+#define TWOPI     6.28318530
+#define HALFPI    1.57079633
+#define OVRTHREE  0.57735027
+#define HUGEVAL   1e20
+
+#define EQUALS(A,B) ( abs((A)-(B)) < EPS )
+#define EQUALSZERO(A) ( ((A)<EPS) && ((A)>-EPS) )
+
+
+//---------------------------------------------------------
+// SHADER VARS
+//---------------------------------------------------------
+
 varying vec2 vUv;
 
 uniform sampler2D uDiffuse;
@@ -7,9 +30,14 @@ uniform float uUVDistort;
 uniform float uUVLoop;
 uniform float uFlash;
 
+// http://www.ozone3d.net/blogs/lab/20110427/glsl-random-generator/
+float rand(vec2 n) {
+    return fract(sin(dot(n.xy, vec2(12.9898, 78.233)))* 43758.5453);
+}
+
 #define FILM_SCOUNT     512.0    // 0-4096
 #define FILM_SINTENSITY 0.60     // 0-1
-#define FILM_NINTENSITY 0.60      // 0-1
+#define FILM_NINTENSITY 0.50      // 0-1
 vec3 filmPass(vec3 col) {
   float x = vUv.x * vUv.y * uTime * 1000.0;
   x = mod( x, 13.0 ) * mod( x, 123.0 );
@@ -54,12 +82,25 @@ vec3 myBloomEffect(vec2 newUV) {
   //return col*col + texture2D(uDiffuse,vUv).rgb;
 }
 
-void main() {
+#define DISTORT_FREQ 5.0
+#define DISTORT_AMP 0.05
+vec2 transformUV(vec2 uv) {
   vec2 newUV = vUv;
-  newUV.y -= uUVLoop;
-  newUV = fract(newUV); // manual texture wrapping
 
-  vec4 col = vec4(myBloomEffect(newUV), 1.0);
+  // UV DISTORT
+  float rand1 = rand(vec2(uTime,vUv.y));
+  float amount = rand1 * DISTORT_AMP * uUVDistort * sin(DISTORT_FREQ*vUv.y*TWOPI);
+  newUV.x += amount;
+
+  // UV LOOP
+  newUV.y -= uUVLoop;
+
+  // manual texture wrapping
+  return fract(newUV);
+}
+
+void main() {
+  vec4 col = vec4(myBloomEffect(transformUV(vUv)), 1.0);
   col.rgb = filmPass(col.rgb);
 
   col.rgb += uFlash;

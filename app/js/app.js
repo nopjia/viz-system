@@ -44,7 +44,7 @@ define([
     controls.update(deltaT);
     sceneManager.updateObjects(deltaT);
     sceneManager.wrapAround(g.camera.position);
-    g.update();
+    g.update(clock.elapsedTime);
 
     requestAnimationFrame(update);
   };
@@ -69,6 +69,9 @@ define([
     if (gamepad.buttons["RIGHT_SHOULDER"]) {
       g.postprocess.uniforms.uFlash.value = 1;
     }
+
+    g.postprocess.uniforms.uUVDistort.value =
+      gamepad.buttons["FACE_2"];
 
     // spaz
     if (gamepad.buttons["FACE_1"]) {
