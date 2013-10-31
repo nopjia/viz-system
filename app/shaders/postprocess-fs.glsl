@@ -82,14 +82,15 @@ vec3 myBloomEffect(vec2 newUV) {
   //return col*col + texture2D(uDiffuse,vUv).rgb;
 }
 
-#define DISTORT_FREQ 5.0
+#define DISTORT_FREQ 4.0
 #define DISTORT_AMP 0.05
+#define DISTORT_TIME_MOVE 100.0
 vec2 transformUV(vec2 uv) {
   vec2 newUV = vUv;
 
   // UV DISTORT
   float rand1 = rand(vec2(uTime,vUv.y));
-  float amount = rand1 * DISTORT_AMP * uUVDistort * sin(DISTORT_FREQ*vUv.y*TWOPI);
+  float amount = DISTORT_AMP * uUVDistort * rand1 * sin( DISTORT_FREQ*TWOPI*vUv.y + DISTORT_TIME_MOVE*uTime );
   newUV.x += amount;
 
   // UV LOOP
