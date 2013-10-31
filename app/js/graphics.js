@@ -27,6 +27,15 @@ define([
     FOG_FAR: 200,
     RESOLUTION: RESOLUTION,
 
+    SCENE_NUM: 2,
+
+    container: null,
+    renderer: null,
+    camera: null,
+    scenes: [],
+    currSceneIdx: 0,
+    stats: null,
+
     init: function() {
       this.container = $("#webgl-container")[0];
       this.width = window.innerWidth/this.RESOLUTION;
@@ -61,8 +70,10 @@ define([
       // this.controls.keys = []; // hack disable keyboard
 
       // scene
-      this.scene = new THREE.Scene();
-      this.scene.fog = new THREE.Fog( 0x000000, this.FOG_NEAR, this.FOG_FAR );
+      for (var i=0; i<this.SCENE_NUM; ++i) {
+        this.scenes[i] = new THREE.Scene();
+        this.scenes[i].fog = new THREE.Fog( 0x000000, this.FOG_NEAR, this.FOG_FAR );
+      }
 
       if (this.postprocess.enabled)
         this.postprocess.init();
@@ -84,11 +95,11 @@ define([
 
       this.renderer.clear();
       if (this.postprocess.enabled) {
-        this.renderer.render( this.scene, this.camera, this.postprocess.rtDiffuse, true );
+        this.renderer.render( this.scenes[this.currSceneIdx], this.camera, this.postprocess.rtDiffuse, true );
         this.renderer.render( this.postprocess.scene, this.postprocess.camera );
       }
       else {
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this.scenes[this.currSceneIdx], this.camera);
       }
 
       this.postprocess.uniforms.uTime.value = elapsedTime / 10;

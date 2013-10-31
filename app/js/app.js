@@ -19,7 +19,7 @@ define([
     shortcut.add("shift+p", function() {
       g.postprocess.enabled = !g.postprocess.enabled;
     });
-  }
+  };
 
   var App = {
 
@@ -29,8 +29,15 @@ define([
 
       gamepad.init();
       controls.init(g.camera, gamepad);
-      sceneManager.init(g.scene);
+      sceneManager.init();
+
+      // add scene
+      for (var j in g.scenes)
+        for (var i in sceneManager.objects[j])
+          g.scenes[j].add(sceneManager.objects[j][i]);
       
+      g.currSceneIdx = 1;
+
       update();
     }
 
@@ -60,7 +67,7 @@ define([
     
     // toggle material
     if (gamepad.buttons["FACE_4"])
-      sceneManager.toggleObjectMaterial();
+      g.currSceneIdx = g.currSceneIdx == 0 ? 1 : 0;
 
     // flash    
     // NOTE: decay not framerate independent
@@ -75,8 +82,8 @@ define([
 
     // spaz
     if (gamepad.buttons["FACE_1"]) {
-      for (var i in sceneManager.objects[sceneManager.geoMode]) {
-        var obj = sceneManager.objects[sceneManager.geoMode][i];
+      for (var i in sceneManager.objects[0]) {
+        var obj = sceneManager.objects[0][i];
         obj.position.x += Math.random() * SPAZ_MAG * 2 - SPAZ_MAG;
         obj.position.y += Math.random() * SPAZ_MAG * 2 - SPAZ_MAG;
         obj.position.z += Math.random() * SPAZ_MAG * 2 - SPAZ_MAG;

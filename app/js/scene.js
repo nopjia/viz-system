@@ -26,13 +26,10 @@ define([
     matParticle: new THREE.ParticleBasicMaterial( { color: 0xfffff, size: PARTICLE_SIZE, sizeAttenuation: true } ),
     geoMode: 0,
 
-    scene: null,
     geos: [],
     objects: [],
 
-    init: function(scene) {
-      this.scene = scene;
-
+    init: function() {
       var triGeometry = new THREE.Geometry();
       triGeometry.vertices.push( new THREE.Vector3( Math.cos(Math.PI*1/6), Math.sin(Math.PI*1/6), 0 ) );
       triGeometry.vertices.push( new THREE.Vector3( Math.cos(Math.PI*5/6), Math.sin(Math.PI*5/6), 0 ) );
@@ -87,17 +84,12 @@ define([
 
         this.objects[0].push(meshMesh);
         this.objects[1].push(meshParticle);
-
-        scene.add(meshMesh);
       }
-
-      // start out with particle
-      this.toggleObjectMaterial();
     },
 
     updateObjects: function(deltaT) {
-      for (var i in this.objects[this.geoMode]) {
-        var obj = this.objects[this.geoMode][i];
+      for (var i in this.objects[0]) {
+        var obj = this.objects[0][i];
         obj.position = obj.position.add( obj.velocity.clone().multiplyScalar(deltaT) );
 
         obj.rotation.x += obj.drot.x * deltaT;
@@ -111,26 +103,14 @@ define([
       cbounds.min.add(center);
       cbounds.max.add(center);
 
-      for (var i in this.objects[this.geoMode]) {
-        var obj = this.objects[this.geoMode][i];
-
+      for (var i in this.objects[0]) {
+        var obj = this.objects[0][i];
         if (obj.position.x > cbounds.max.x) obj.position.x = cbounds.min.x;
         else if (obj.position.x < cbounds.min.x) obj.position.x = cbounds.max.x;
         if (obj.position.y > cbounds.max.y) obj.position.y = cbounds.min.y;
         else if (obj.position.y < cbounds.min.y) obj.position.y = cbounds.max.y;
         if (obj.position.z > cbounds.max.z) obj.position.z = cbounds.min.z;
         else if (obj.position.z < cbounds.min.z) obj.position.z = cbounds.max.z;
-      }
-
-    },
-
-    toggleObjectMaterial: function() {
-      var currMode = this.geoMode;
-      this.geoMode = this.geoMode === 0 ? 1 : 0;
-
-      for (var i in this.objects[this.geoMode]) {
-        this.scene.remove( this.objects[currMode][i] );
-        this.scene.add( this.objects[this.geoMode][i] );
       }
     }
 
