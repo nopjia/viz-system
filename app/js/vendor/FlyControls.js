@@ -195,14 +195,12 @@ THREE.FlyControls = function ( object, domElement ) {
 
   this.update = function( delta ) {
 
-    this.updateMovementVector();
+    //this.updateMovementVector();
     this.updateRotationVector();
 
-    var moveMult = delta * this.movementSpeed;
-
-    this.object.translateX( this.moveVector.x * moveMult );
-    this.object.translateY( this.moveVector.y * moveMult );
-    this.object.translateZ( this.moveVector.z * moveMult );
+    this.object.translateX( this.moveVector.x * delta );
+    this.object.translateY( this.moveVector.y * delta );
+    this.object.translateZ( this.moveVector.z * delta );
 
     this.tmpQuaternion.set(
       this.rotationVector.x * delta * this.pitchSpeed,
@@ -218,6 +216,9 @@ THREE.FlyControls = function ( object, domElement ) {
   };
 
   this.updateMovementVector = function() {
+
+    // DO NOT DO
+    return;
 
     var forward = ( this.moveState.forward || ( this.autoForward && !this.moveState.back ) ) ? 1 : 0;
 
