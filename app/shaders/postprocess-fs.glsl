@@ -27,7 +27,6 @@ uniform sampler2D uDiffuse;
 uniform vec2 uHV;
 uniform float uTime;
 uniform float uUVDistort;
-uniform float uUVLoop;
 uniform float uFlash;
 uniform float uBlackout;
 uniform float uSubdivs;
@@ -97,9 +96,6 @@ vec2 transformUV(vec2 uv) {
   float rand1 = rand(vec2(uTime,vUv.y));
   float amount = DISTORT_AMP * uUVDistort * rand1 * sin( DISTORT_FREQ*TWOPI*vUv.y + DISTORT_TIME_MOVE*uTime );
   newUV.x += amount;
-
-  // UV LOOP
-  newUV.y -= uUVLoop;
 
   // manual texture wrapping
   return fract(newUV);

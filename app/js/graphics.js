@@ -142,7 +142,6 @@ define([
           uHV:        {type: "v2", value: new THREE.Vector2(1.0/width, 1.0/height)},
           uTime:      {type: "f", value: 0.0},
           uUVDistort: {type: "f", value: 0.0},
-          uUVLoop:    {type: "f", value: 0.0},
           uFlash:     {type: "f", value: 0.0},
           uBlackout:  {type: "f", value: 0.0},
           uSubdivs:   {type: "f", value: 1.0}

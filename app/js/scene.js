@@ -22,8 +22,8 @@ define([
       new THREE.Vector3(BOUNDS_HSIZE,BOUNDS_HSIZE,BOUNDS_HSIZE)
     ),
 
-    matWire: new THREE.MeshBasicMaterial( { color: 0xfffff, wireframe: true } ),
-    matParticle: new THREE.ParticleBasicMaterial( { color: 0xfffff, size: PARTICLE_SIZE, sizeAttenuation: true } ),
+    matWire: new THREE.MeshBasicMaterial( { color: 0x0fffff, wireframe: true } ),
+    matParticle: new THREE.ParticleBasicMaterial( { color: 0x0fffff, size: PARTICLE_SIZE, sizeAttenuation: true } ),
     geoMode: 0,
 
     geos: [],
