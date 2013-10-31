@@ -29,6 +29,7 @@ uniform float uTime;
 uniform float uUVDistort;
 uniform float uUVLoop;
 uniform float uFlash;
+uniform float uBlackout;
 
 // http://www.ozone3d.net/blogs/lab/20110427/glsl-random-generator/
 float rand(vec2 n) {
@@ -105,6 +106,7 @@ void main() {
   col.rgb = filmPass(col.rgb);
 
   col.rgb += uFlash;
+  col.rgb *= (1.0-uBlackout);
   
   //col = vec4(doThreshold(texture2D(uDiffuse,vUv).rgb), 1.0);
   //col = texture2D(uDiffuse,vUv);

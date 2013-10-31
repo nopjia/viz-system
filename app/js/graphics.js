@@ -143,7 +143,8 @@ define([
           uTime:      {type: "f", value: 0.0},
           uUVDistort: {type: "f", value: 0.0},
           uUVLoop:    {type: "f", value: 0.0},
-          uFlash:     {type: "f", value: 0.0}
+          uFlash:     {type: "f", value: 0.0},
+          uBlackout:  {type: "f", value: 0.0}
         };
         
         var shader = new THREE.ShaderMaterial({

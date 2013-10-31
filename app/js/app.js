@@ -56,18 +56,34 @@ define([
     requestAnimationFrame(update);
   };
 
+  var TOGGLE_WAIT_FRAMES = 5;
+  var toggleWait = 0;
   var SPAZ_MAG = 5;
   var FLASH_DECAY_RATE = 0.8;
   var UV_LOOP_LOOP_RATE = 2;
   var UV_LOOP_RESTORE_RATE = 15;
   var uvLoopSpeed = 0;
   var uvLoop = 0;
+  var BLACK_WAIT_FRAMES = 1;
+  var blackWait = 0;
 
   var gamepadKeysUpdate = function(deltaT) {
     
     // toggle material
-    if (gamepad.buttons["FACE_4"])
-      g.currSceneIdx = g.currSceneIdx == 0 ? 1 : 0;
+    ++toggleWait;
+    if (gamepad.buttons["FACE_4"] && toggleWait > TOGGLE_WAIT_FRAMES) {
+      g.currSceneIdx = g.currSceneIdx === 0 ? 1 : 0;
+      toggleWait = 0;
+    }
+
+    // blackout flicker
+    ++blackWait;
+    g.postprocess.uniforms.uBlackout.value = 0;
+    if (gamepad.buttons["RIGHT_SHOULDER_BOTTOM"] && blackWait > BLACK_WAIT_FRAMES) {
+      g.postprocess.uniforms.uBlackout.value =
+        g.postprocess.uniforms.uBlackout.value === 0 ? 1 : 0;
+      blackWait = 0;
+    }
 
     // flash    
     // NOTE: decay not framerate independent
