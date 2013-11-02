@@ -68,7 +68,7 @@ define([
   var uvLoopSpeed = 0;
   var uvLoop = 0;
 
-  var BLACK_WAIT_FRAMES = 3;
+  var BLACK_WAIT_FRAMES = 2;
   var blackWait = 0;
 
   var subdivsButtonLast = 0;
@@ -111,12 +111,15 @@ define([
 
     // blackout flicker
     ++blackWait;
-    g.postprocess.uniforms.uBlackout.value = 0;
-    if (gamepad.buttons["RIGHT_SHOULDER_BOTTOM"] && blackWait > BLACK_WAIT_FRAMES) {
-      g.postprocess.uniforms.uBlackout.value =
-        g.postprocess.uniforms.uBlackout.value === 0 ? 1 : 0;
-      blackWait = 0;
+    if (gamepad.buttons["RIGHT_SHOULDER_BOTTOM"]) {
+      if (blackWait > BLACK_WAIT_FRAMES) {
+        g.postprocess.uniforms.uBlackout.value =
+          g.postprocess.uniforms.uBlackout.value === 0 ? 1 : 0;
+        blackWait = 0;
+      }
     }
+    else
+      g.postprocess.uniforms.uBlackout.value = 0;
 
     // subdivs
     if (gamepad.buttons["PAD_TOP"] && subdivsButtonLast === 0)
