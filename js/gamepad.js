@@ -64,8 +64,11 @@ define([
     gamepad: null, // only support one gamepad
 
     init: function() {
-      
-      var gamepadSupportAvailable = !!navigator.webkitGetGamepads || !!navigator.webkitGamepads;
+
+      var gamepadSupportAvailable =
+        !!navigator.getGamepads ||
+        !!navigator.webkitGetGamepads ||
+        !!navigator.webkitGamepads;
       if (!gamepadSupportAvailable)
         console.error("Gamepad not supported");
 
@@ -75,7 +78,8 @@ define([
 
     update: function() {
       if (this.polling) {
-        _gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
+        var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+        _gamepad = gamepads[0];
 
         if (_gamepad) {
           // finds new gamepad
