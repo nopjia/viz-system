@@ -95,7 +95,7 @@ define([
             this.axes[k] = _gamepad.axes[this.AXES[k]];
           }
           for (k in this.BUTTONS) {
-            this.buttons[k] = _gamepad.buttons[this.BUTTONS[k]];
+            this.buttons[k] = _gamepad.buttons[this.BUTTONS[k]].value;
           }
         }
       }

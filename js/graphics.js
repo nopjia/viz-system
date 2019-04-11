@@ -38,18 +38,19 @@ define([
 
     init: function() {
       this.container = $("#webgl-container")[0];
-      this.width = window.innerWidth/this.RESOLUTION;
-      this.height = window.innerHeight/this.RESOLUTION;
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
 
       this.renderer = new THREE.WebGLRenderer({
         clearAlpha: 0,
         clearColor: 0x000000,
-        antialias: true
+        antialias: true,
+        devicePixelRatio: 1 / this.RESOLUTION,
       });
       this.renderer.setSize( this.width, this.height );
       this.renderer.autoClear = false;
       this.container.appendChild( this.renderer.domElement );
- 
+
       // camera
       this.camera = new THREE.PerspectiveCamera(
         this.CAM_FOV,
@@ -132,11 +133,11 @@ define([
         // init buffer
         this.rtDiffuse = new THREE.WebGLRenderTarget(width/this.RESOLUTION, height/this.RESOLUTION);
         this.rtDiffuse.generateMipmaps = false;
-        
+
         // scene and camera
         this.camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, -1.0, 1.0);
         this.scene = new THREE.Scene();
-        
+
         this.uniforms = {
           uDiffuse:   {type: "t", value: this.rtDiffuse},
           uHV:        {type: "v2", value: new THREE.Vector2(1.0/width, 1.0/height)},
@@ -146,13 +147,13 @@ define([
           uBlackout:  {type: "f", value: 0.0},
           uSubdivs:   {type: "f", value: 1.0}
         };
-        
+
         var shader = new THREE.ShaderMaterial({
           uniforms:       this.uniforms,
           vertexShader:   Utils.loadTextFile("shaders/postprocess-vs.glsl"),
           fragmentShader: Utils.loadTextFile("shaders/postprocess-fs.glsl")
         });
-        
+
         this.quad = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), shader);
         this.scene.add(this.quad);
       }
